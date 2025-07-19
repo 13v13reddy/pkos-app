@@ -1,12 +1,12 @@
 // app/setup-recovery/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { generateRecoveryCodes, hashRecoveryCode } from '../../lib/crypto';
 import { useAuth } from '../context/AuthContext';
 
-export default function SetupRecoveryPage() {
+function SetupRecoveryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -106,5 +106,31 @@ export default function SetupRecoveryPage() {
         {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded mb-6"></div>
+          <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 border rounded-md">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="h-6 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function SetupRecoveryPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <SetupRecoveryContent />
+    </Suspense>
   );
 }
