@@ -1,12 +1,16 @@
 /*
-* 1. UPDATE: lib/db.ts 
-* The structure remains the same, but it's important to remember 'id' will now be a UUID.
+* 1. UPDATE: lib/db.ts
+* The structure is updated to support tags.
 */
 import { EncryptedData } from './crypto';
 
-// Add a unique ID to our note type
+// Add a unique ID, type, parentId, and tags to our note type
 export interface Note extends EncryptedData {
   id: string; // This will now be a UUID string
+  type: 'note' | 'folder';
+  parentId: string | null;
+  name: string; // For display in the folder view
+  tags?: string[]; // For networked organization
 }
 
 declare global {
@@ -23,4 +27,3 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export { users, notes };
-

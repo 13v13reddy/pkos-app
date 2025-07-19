@@ -1,6 +1,6 @@
 /*
 * 2. UPDATE: app/api/notes/route.ts
-* This file is updated to use uuid for new note creation.
+* This file is updated to handle tags.
 */
 import { NextResponse } from 'next/server';
 import { notes } from '../../../lib/db';
@@ -20,27 +20,27 @@ export async function GET(request: Request) {
 // POST handler now uses UUID for a guaranteed unique ID
 export async function POST(request: Request) {
   const body = await request.json();
-  const { email, encryptedNote } = body;
-  if (!email || !encryptedNote) {
-    return NextResponse.json({ message: 'Email and encryptedNote are required.' }, { status: 400 });
+  const { email, encryptedNote, type, parentId, name, tags } = body;
+  if (!email || !encryptedNote || !type || !name) {
+    return NextResponse.json({ message: 'Email, encryptedNote, type, and name are required.' }, { status: 400 });
   }
 
   const userNotes = notes.get(email) || [];
   // FIX: Use uuidv4() to generate a robust, unique ID.
-  const newNote = { ...encryptedNote, id: uuidv4() }; 
+  const newNote = { ...encryptedNote, id: uuidv4(), type, parentId, name, tags };
   userNotes.push(newNote);
   notes.set(email, userNotes);
 
   return NextResponse.json(newNote, { status: 201 }); // Return the new note with its ID
 }
 
-// PUT handler for updating an existing note remains the same
+// PUT handler for updating an existing note now handles tags
 export async function PUT(request: Request) {
     const body = await request.json();
-    const { email, noteId, encryptedNote } = body;
+    const { email, noteId, encryptedNote, parentId, tags } = body;
 
-    if (!email || !noteId || !encryptedNote) {
-        return NextResponse.json({ message: 'Email, noteId, and encryptedNote are required.' }, { status: 400 });
+    if (!email || !noteId) {
+        return NextResponse.json({ message: 'Email and noteId are required.' }, { status: 400 });
     }
 
     const userNotes = notes.get(email) || [];
@@ -51,7 +51,13 @@ export async function PUT(request: Request) {
     }
 
     // Update the note in the array
-    const updatedNote = { ...encryptedNote, id: noteId };
+    const updatedNote = { ...userNotes[noteIndex], ...encryptedNote };
+    if (parentId !== undefined) {
+        updatedNote.parentId = parentId;
+    }
+    if (tags) {
+        updatedNote.tags = tags;
+    }
     userNotes[noteIndex] = updatedNote;
     notes.set(email, userNotes);
 

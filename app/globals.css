@@ -3,3 +3,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Command Palette styles */
+[cmdk-overlay] {
+    background-color: rgba(0, 0, 0, 0.5);
+}
