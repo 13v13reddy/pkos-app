@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-code-block-lowlight": "^3.0.7",
     "@tiptap/extension-link": "^3.0.7",
     "@tiptap/extension-mention": "^3.0.7",
@@ -16,13 +17,13 @@
     "@tiptap/extension-task-list": "^3.0.7",
     "@tiptap/react": "^3.0.7",
     "@tiptap/starter-kit": "^3.0.7",
-    "lowlight": "^3.0.0",
-    "highlight.js": "^11.9.0",
     "cmdk": "^1.0.0",
     "file-saver": "^2.0.5",
     "fuse.js": "^7.1.0",
+    "highlight.js": "^11.9.0",
     "jszip": "^3.10.1",
     "lodash.isequal": "^4.5.0",
+    "lowlight": "^3.0.0",
     "next": "15.4.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
